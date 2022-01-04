@@ -1,0 +1,85 @@
+use("shop_Chanvanvit");
+
+// db.products.updateMany(
+//     { 
+//         _id: ObjectId("61d3e8ef26b72f159ac5fd18")  
+//     },
+//     { $set : { isBestSeller : true } } 
+// );
+
+// db.products.updateMany(
+//     {
+//         tags : "supplies"
+//     },
+//     {
+//         $unset : { "isBestSeller" : true }
+//     }
+// );
+
+// db.products.find(
+//     { 
+//         _id: ObjectId("61d3e8ef26b72f159ac5fd18")  
+//     }
+// );
+
+// db.products.find(
+//     { 
+//         tags : "supplies" 
+//     }
+// );
+
+// db.products.updateOne(
+//     { name: "Woodplate" },
+//     { $push: { tags: "home" } }
+// );
+
+// db.products.find(
+//     { 
+//         name: "Woodplate"
+//     }
+// );
+
+// db.products.updateMany(
+//     { name: "Belkin Bags" },
+//     { $inc : { quantity: 10 } }
+// );
+
+// db.products.updateMany(
+//     { name: "Belkin Bags" },
+//     { $inc : { quantity: -10 } }
+// );
+
+// db.products.find(
+//     { 
+//         name: "Belkin Bags"
+//     }
+// );
+// db.products.deleteOne(
+//     {_id: "61d3e8f026b72f159ac5fd1b"}
+// );
+// db.products.updateMany(
+//     {
+//         tags: {$nin : ["Home"]}
+//     },{
+//         $push : { tags: "Home" }
+//     }
+// );
+
+// db.products.find(
+//     { 
+        
+//     }
+// );
+
+// db.products.updateMany(
+//     { tags : {$in : ["Home","school"]} },
+//     { $set : { "isBestSeller" : true } }
+// );
+
+// db.products.deleteMany({ quantity : { $lt : 1000 }  });
+
+// db.products.deleteMany(
+//     { 
+//         size : { $exists : false }  
+//     }
+// );

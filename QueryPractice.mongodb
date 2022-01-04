@@ -1,0 +1,84 @@
+use("soi5_shop");
+// 1 = ascending, -1=descending
+db.customers.find(
+    {},
+    { name: 1 }
+).sort({ name: 1 });
+
+
+db.products.find(
+    {},
+    { name: 1, price: 1}
+).sort(
+    { price: -1 } 
+).limit(3)
+
+// Query on nested fields
+// dot notation
+db.sales.find(
+    { "customer.gender": "F"},
+    { 
+        "customer.email": 1, 
+        "customer.gender": 1,
+        totalPrice: 1
+    }
+);
+
+// Aggregate Function
+// SUM COUNT MIN MAX AVG
+db.sales.aggregate([
+    //filter document ที่ต้องการก่อน $match : {} 
+        { $match: { "customer.gender": "F"} },
+    // groupping 
+        { 
+            $group:  {
+                "_id" : "$couponUsed",
+                "totalSales" : { $sum : "$totalPrice" }
+            }
+        },
+        {
+            $sort : { "totalSales" : -1 }
+        }
+
+    ]
+);
+
+// ให้หายอดขายรวมจากการขายออนไลน์ (purchaseMethod: Online) โดยแยกตามอีเมลของ customer และเรียงลำดับจากน้อยไปมากตามยอดขาย
+db.sales.aggregate([
+        {$match: { purchaseMethod: "Online" }},
+        {
+            $group: {
+                "_id": "$customer.email",
+                "totalSales": { $sum: "$totalPrice"}
+            }
+        },
+        {
+            $sort: {"totalSales": 1}
+        },
+        {
+            $match: { "totalSales" : { $lt: 5000 } }
+        }
+    ]
+);
+
+
+db.sales.aggregate(
+    { $match : { purchaseMethod: { $exists: true } } },
+    {
+        $group: {
+            "_id" : {
+                "purchaseMethod" : "$purchaseMethod",
+                "gender" : "$customer.gender"
+            },
+            "total" : { $sum: "$totalPrice" },
+            "noOfOrders" : { $sum: 1 }, //ใช้แทน count
+            "average" : { $avg: "$totalPrice" },
+        }
+    },
+    {
+        $sort: { 
+            "_id.purchaseMethod" : 1, 
+            "_id.gender":1 
+        }
+    }
+);

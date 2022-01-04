@@ -1,0 +1,84 @@
+use("soi5_shop");
+
+db.customers.find(
+    {},
+    { name : 1 }
+).sort({ name : 1 });
+
+// db.products.find(
+//     {},
+//     { name : 1 , price : 1}
+// ).sort({ price : 1 }).limit(3)
+
+// db.sales.find(
+//     { "customer.gender": "F"},
+//     { "customer.email": 1, 
+//     "customer.gender": 1,
+//     totalPrice: 1},
+// );
+
+
+// db.sales.aggregate([
+//     {
+//         $match: {purchaseMethod: "Online"}
+//     },{
+//         $group: {
+//             "_id": "$customer.email",
+//             "totalSales": {$sum: "$totalPrice"}
+//         }
+//     },{
+//         $sort: {"totalSales": 1}
+//     }
+// ]);
+
+// db.sales.aggregate([
+//     {
+//         $group: {
+//             "_id": {
+//                 "purchaseMethod" : "$purchaseMethod",
+//                 "gender" : "$customer.gender"
+//             }
+//         },
+//         "total" : { $sum : "$totalPrice"}
+//     }
+// ]);
+
+// db.sales.aggregate([
+//     {
+//         $match: {purchaseMethod: { $exists : true } }
+//     },{
+//         $group: {
+//             "_id": {
+//                 "purchaseMethod" : "$purchaseMethod",
+//                 "gender" : "$customer.gender"
+//             }
+//         },
+//         "total" : { $sum : "$totalPrice"}
+//     },{
+//         $sort: {
+//             "_id.purchaseMethod" : 1 ,
+//             "_id.gender" : 1
+//         }
+//     }
+// ]);
+
+// db.sales.aggregate([
+//     {
+//         $match: {purchaseMethod: { $exists : true } }
+//     },{
+//         $group: {
+//             "_id": {
+//                 "purchaseMethod" : "$purchaseMethod",
+//                 "gender" : "$customer.gender"
+//             }
+//         },
+//         "total" : { $sum : "$totalPrice"},
+//         "noOfOrders" : { $sum : 1},
+//         "average" : { $avg : "$totalPrice"}
+//     },{
+//         $sort: {
+//             "_id.purchaseMethod" : 1 ,
+//             "_id.gender" : 1
+//         }
+//     }
+// ]);

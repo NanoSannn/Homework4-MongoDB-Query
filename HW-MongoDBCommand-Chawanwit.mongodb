@@ -1,0 +1,170 @@
+/*  ชื่อ <Chawanwit_ta>  รหัสนักศึกษา <63309010004>
+    -------------------------------------------------------------
+    - ให้เขียนคำสั่ง MongoDB ตามโจทย์ต่อไปนี้
+    - ตั้งชื่อไฟล์เป็น HW-MongoDBCommand-Yourname.mongodb
+*/
+
+// Q1 - Q4 ใช้ Connection ที่นักศึกษาสร้างเอง
+//  แปะ URL ของ MongoDB Connection ที่นี่ 
+//  <mongodb+srv://root:Ken0987256736@bcit-chanwawit.isril.mongodb.net/test>
+
+//  Q1 ให้ insert ข้อมูลนักศึกษาจำนวน 5 คน โดยกำหนดให้มีฟิลด์ดังนี้
+//  studentId, name, gender, age, email, tel, address {houseNo, district, city, zipcode}
+//  registeredCourses [course1, course2, ... ]
+use("school-1");
+db.products.insertMany([
+    {
+        studentId : "101",
+        name : "ปอน",
+        gender : "ชาย",
+        age : 19,
+        email : "sdvddjs@gmail.com",
+        tel : 0982374632,
+        address : {
+            houseNo : 123 ,
+            district : "เมือง",
+            city : "นครปฐม",
+            zipcode : 73000
+        },
+        registeredCourses : ["databuse","ภาษาไทย","Programming"]
+    },{
+        studentId : "102",
+        name : "พี",
+        gender : "ชาย",
+        age : 20,
+        email : "dvdfbzx@gmail.com",
+        tel : 0983246423,
+        address : {
+            houseNo : 32 ,
+            district : "เมือง",
+            city : "นครปฐม",
+            zipcode : 73000
+        },
+        registeredCourses : ["databuse"]
+    },{
+        studentId : "103",
+        name : "พลอย",
+        gender : "หญิง",
+        age : 24,
+        email : "fsdvcvsd@gmail.com",
+        tel : 0983233433,
+        address : {
+            houseNo : 54 ,
+            district : "เมือง",
+            city : "นครปฐม",
+            zipcode : 73000
+        },
+        registeredCourses : ["databuse","TypeScript"]
+    },{
+        studentId : "104",
+        name : "นาย",
+        gender : "ชาย",
+        age : 20,
+        email : "vampirepp11@gmail.com",
+        tel : 0987256736,
+        address : {
+            houseNo : 126 ,
+            district : "เมือง",
+            city : "นครปฐม",
+            zipcode : 73000
+        },
+        registeredCourses : ["databuse","Programming"]
+    },{
+        studentId : "105",
+        name : "บาส",
+        gender : "ชาย",
+        age : 60,
+        email : "dfsdsds@gmail.com",
+        tel : 0873324444,
+        address : {
+            houseNo : 423 ,
+            district : "เมือง",
+            city : "นครปฐม",
+            zipcode : 73000
+        },
+        registeredCourses : ["databuse","TypeScript","Programming"]
+    }
+]);
+
+// Q2 เพิ่มอายุขึ้น 1 ปี ของนักศึกษาที่อายุน้อยกว่า 20 ปี
+db.products.updateMany(
+    { age : 19 },
+    { $inc : { age: 1 } }
+);
+db.products.find(
+    { age : 20 }
+);
+
+
+// Q3 เพิ่มวิชาที่ลงทะเบียนชื่อ TypeScript Programming ให้กับนักศึกษาที่ยังไม่ได้ลงทะเบียนวิชานี้
+db.products.updateMany(
+    { tags : {$in : ["TypeScript","Programming"]} },
+    { $set : { registeredCourses : ["TypeScript","Programming"] } }
+);
+
+// Q4 ลบรายชื่อนักศึกษาที่มีอายุเกิน 60 ปี
+db.products.deleteMany({ age : { $lt : 1000 }  });
+
+
+/* -------------------------------------------------------
+    Q5 - Q8 ให้ใช้ Connection ต่อไปนี้
+    mongodb+srv://nvcit:nvcit@nvc-it.hpx34.mongodb.net/
+    และเลือก database ชื่อ soi5_shop
+*/
+
+// Q5 แสดงข้อมูล customers ทั้งหมด เฉพาะฟิลด์ name, email, address
+use("soi5_shop");
+db.customers.find(
+    {},
+    { 
+        name : 1,
+        email : 1,
+        address : 1 
+    }
+).sort({ 
+    name : 1 ,
+    email : 1,
+    address : 1
+});
+
+// Q6 แสดงข้อมูล products ที่มีฟิลด์ size โดยเรียงลำดับตามราคาสินค้า (price)
+
+db.products.find(
+    {},
+    { name : 1 ,size : 1 ,price : 1 }
+).sort({ price : 1 });
+
+// Q7 แสดงยอดขายทั้งหมดในคอลเลคชัน Sales เฉพาะรายการที่มี totalPrice มากกว่า 5000 โดยจัดกลุ่มตามฟิลด์ purchaseMethod
+
+db.sales.aggregate([
+        {$match: {purchaseMethod: "Online"}},
+        {
+            $group: {
+                "_id": "$customer.email",
+                "totalSales": {$sum: "$totalPrice"}
+            }
+        },
+        {
+            $match : { "totalSales": { $gt: 5000}}
+        }
+    
+    ]
+);
+
+// Q8 แสดงจำนวนรายการสั่งซื้อแยกตามเพศของ customer เฉพาะผู้ที่มีอายุต่ำกว่า 50 ปี และเรียงตามลำดับตามจำนวนรายการสั่งซื้อจากมากไปหาน้อย
+db.sales.aggregate(
+    { 
+        $match : { purchaseMethod: { $exists: true } } 
+    },{
+        $group: {
+            "_id" : {
+                "gender" : "$customer.gender",
+                "food" : "$items.name",
+            },
+        }
+    },{
+        $sort: { 
+            "_id.food": -1 ,
+        }
+    }
+);
